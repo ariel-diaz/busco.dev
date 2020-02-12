@@ -1,11 +1,7 @@
 import { Request, Response } from 'express';
 import { IProfile } from '../interfaces/Profile';
-import User, { UserType } from '../models/user.model';
-
- export const createUser = async (req: Request, res: Response) : Promise<any> =>  {
-    const { name, email, password} = req.body;
-    res.send('El usuario es valido!');
-}
+import User from '../models/user.model';
+import { Query } from 'mongoose';
 
 export const getUser = async (req: Request, res: Response) : Promise<any> => {
     const { id } = req.params;
@@ -32,11 +28,8 @@ export const updateUser = async (req: Request, res: Response) : Promise<any> => 
         city, english, skills, portfolio, github, linkedin, experience
     }
 
-     const user = await User.findOneAndUpdate(_id, 
-        { name: "pepAe",
-        profile: newProfile });
-
-    console.log('NEW USER', user)
+     const user = await User.findOneAndUpdate({ _id }, 
+        { profile: newProfile });
 
      if(!user) {
          res.status(404).json({
@@ -45,12 +38,61 @@ export const updateUser = async (req: Request, res: Response) : Promise<any> => 
          })
      }
 
-
-
     res.send({
         body: user,
         message: 'Success'
     })
 }
+
+
+export const getUsers = async (req: Request, res: Response): Promise<any> => {
+
+    const {page, ...filters} = req.body;
+    const pageSize = 5;
+
+    const query = setFilters(filters);
+    const users = await User.find(query).skip((page - 1) * pageSize).limit(pageSize);
+    
+    res.status(200).send({
+        length: users.length,
+        payload: users,
+    });
+}
+
+
+const setFilters = (filter: IProfile) => {
+    let query: any = {};
+
+    if(filter?.experience !== undefined) {
+        query["profile.experience"] = filter.experience
+    }
+
+    if(filter?.city) {
+        query["profile.city"] = filter.city
+    }
+
+    if(filter?.english) {
+        query["profile.english"] = filter.english
+    }
+
+    if(filter?.skills && filter.skills.length > 0) {
+        query["profile.skills"] = {$all: filter.skills}
+    }
+
+    if(filter?.portfolio) {
+        query["profile.portolio"] = { $nin: [ null, "" ] }
+    }
+
+    if(filter?.github) {
+        query["profile.github"] = { $nin: [ null, "" ] }
+    }
+
+    if(filter?.linkedin) {
+        query["profile.linkedin"] = { $nin: [ null, "" ] }
+    }
+
+    return query;
+
+} 
 
 
