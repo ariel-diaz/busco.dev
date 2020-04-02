@@ -44,19 +44,41 @@ export const updateUser = async (req: Request, res: Response) : Promise<any> => 
     })
 }
 
+export const deleteUser = async (req: Request, res: Response) => {
+    if(!req.params.id) {
+        res.status(404).send({
+            error: true,
+            message: 'El id no es valido'
+        })
+    }
+
+        const response = await User.findByIdAndDelete(req.params.id);
+
+
+        res.status(201).send({
+            error: false,
+            message: 'El usuario se elimino de forma exitosa'
+        })
+}
+
 
 export const getUsers = async (req: Request, res: Response): Promise<any> => {
-
-    const {page, ...filters} = req.body;
-    const pageSize = 5;
-
-    const query = setFilters(filters);
-    const users = await User.find(query).skip((page - 1) * pageSize).limit(pageSize);
+    try {
+        const {page, ...filters} = req.query;
+        const pageSize = 5;
     
-    res.status(200).send({
-        length: users.length,
-        payload: users,
-    });
+        const query = setFilters(filters);
+        const users = await User.find(query).skip((page - 1) * pageSize).limit(pageSize);
+        
+        res.status(200).send({
+            length: users.length,
+            payload: users,
+        });
+    } catch (error) {
+        res.status(500).send({
+            error,
+        })
+    }
 }
 
 

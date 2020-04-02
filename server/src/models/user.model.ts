@@ -9,16 +9,23 @@ export const UserSchema = new Schema({
         type: String, required: true
     },
     email: {
-        type: String, required: true
+        type: String, required: true, unique: true
     },
     password: {
         type: String, required: true
     },
     profile: {
-        type: Object, required: false
+        type: Schema.Types.ObjectId, ref: 'profile', required: false
     }
 })
 
+UserSchema.index({
+    email: 1
+  }, {
+    unique: true,
+  });
+  
 
 const User = mongoose.model<UserType>('User', UserSchema);
+
 export default User;

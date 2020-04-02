@@ -8,7 +8,7 @@ import connect from './db';
 
 const app : Application = express();
 const PORT = 3000;
-const db: string = `mongodb+srv://ariel:ariel123@clusterari-lop9w.mongodb.net/test?retryWrites=true&w=majority`
+const db: string = process.env.MONGO_CONNECTION_STRING
 
 
 import authRouter from './routes/auth';
@@ -28,5 +28,5 @@ app.use('/api/user', userRouter);
 connect(db);
 
 app.listen(PORT, () => {
-    console.log(`SERVER RUNNING PORT ${PORT}`)
+    console.log(`SERVER RUNNING PORT: ${PORT}`)
 })

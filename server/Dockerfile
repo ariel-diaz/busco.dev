@@ -1,15 +1,17 @@
-FROM node:10
+FROM node:latest
 
-WORKDIR /usr/src/app
+RUN npm i -g nodemon
 
-COPY package.json ./
+USER node
 
-RUN npm install
+RUN mkdir /home/node/code
 
-RUN npm run build
+WORKDIR /home/node/code
 
-COPY ./build .
+COPY --chown=node:node package-lock.json package.json ./
 
-EXPOSE 3000
+RUN npm ci
 
-CMD {"npm","run","start"]
+COPY --chown=node:node . .
+
+CMD ["nodemon"]
