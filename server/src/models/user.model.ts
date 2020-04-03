@@ -29,7 +29,7 @@ export const userSchema = new Schema({
 userSchema.path('email').validate(async (value: string) => {
   const emailCount = await user.countDocuments({ email: value });
   return !emailCount;
-},                                'Email already exists');
+}, 'Email already exists');
 
 const user = mongoose.model<UserType>('User', userSchema);
 export default user;

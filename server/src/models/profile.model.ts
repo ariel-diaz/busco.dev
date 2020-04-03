@@ -38,17 +38,17 @@ export const profilesSchema = new Schema({
 profilesSchema.path('portfolio').validate(async (value: string) => {
   const portfolioCount = await profile.countDocuments({ portfolio: value });
   return !portfolioCount;
-},                                        'Portfolio already exists');
+}, 'Portfolio already exists');
 
 profilesSchema.path('github').validate(async (value: string) => {
   const githubCount = await profile.countDocuments({ github: value });
   return !githubCount;
-},                                     'Github already exists');
+}, 'Github already exists');
 
 profilesSchema.path('linkedin').validate(async (value: string) => {
   const linkedinCount = await profile.countDocuments({ linkedin: value });
   return !linkedinCount;
-},                                       'Linkedin already exists');
+}, 'Linkedin already exists');
 
 const profile = mongoose.model<ProfileType>('Profile', profilesSchema);
 export default profile;

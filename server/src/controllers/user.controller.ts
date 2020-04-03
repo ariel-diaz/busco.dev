@@ -40,7 +40,10 @@ export const updateUser = async (req: Request, res: Response): Promise<any> => {
 
     if (!profile) throw new Error('Error al crear el perfil');
 
-    const user = await userModel.findOneAndUpdate({ _id }, { profile: profile._id });
+    const user = await userModel.findOneAndUpdate(
+      { _id },
+      { profile: profile._id }
+    );
 
     if (!user) throw new Error('El usuario no existe');
 
@@ -87,7 +90,8 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
     const pageSize = 5;
 
     const query = setFilters(filters);
-    const users = await userModel.find(query)
+    const users = await userModel
+      .find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
       .populate('profile');
