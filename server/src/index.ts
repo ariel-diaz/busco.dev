@@ -12,6 +12,7 @@ const db: string = process.env.MONGO_CONNECTION_STRING;
 
 import authRouter from './routes/auth';
 import userRouter from './routes/user';
+import profileRouter from './routes/profile';
 
 // Middlewares
 app.use(morgan('dev'));
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));
 // Routes
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
+app.use('/api/profile', profileRouter);
 
 // Connect db
 connect(db);

@@ -11,8 +11,8 @@ const encriptPassword = async (password: string): Promise<string> => {
 
 const validatePassword = async (
   password: string,
-  actualPassword: string
-): Promise<Boolean> => {
+  actualPassword: string,
+): Promise<boolean> => {
   return await bcrypt.compare(password, actualPassword);
 };
 
