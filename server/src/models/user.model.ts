@@ -1,31 +1,29 @@
 
-import mongoose, { Schema, Document} from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+
 import { IUser } from '../interfaces/User';
 
 export type UserType = IUser & Document;
 
-export const UserSchema = new Schema({
-    name: {
-        type: String, required: true
-    },
-    email: {
-        type: String, required: true, unique: true
-    },
-    password: {
-        type: String, required: true
-    },
-    profile: {
-        type: Schema.Types.ObjectId, ref: 'profile', required: false
-    }
-})
+export const userSchema = new Schema({
+  name: {
+    type: String, required: true,
+  },
+  email: {
+    type: String, required: true, unique: true, uniqueCaseInsensitive: true,
+  },
+  password: {
+    type: String, required: true,
+  },
+  profile: {
+    type: Schema.Types.ObjectId, ref: 'Profile', required: false,
+  },
+});
 
-UserSchema.index({
-    email: 1
-  }, {
-    unique: true,
-  });
-  
+userSchema.path('email').validate(async (value :string) => {
+  const emailCount = await user.countDocuments({ email: value });
+  return !emailCount;
+},                                'Email already exists');
 
-const User = mongoose.model<UserType>('User', UserSchema);
-
-export default User;
+const user = mongoose.model<UserType>('User', userSchema);
+export default user;

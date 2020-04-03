@@ -8,7 +8,7 @@ export interface IProfile {
     experience: Boolean,
 }
 
-enum English {
+export enum English {
     BASIC,
     INTERMEDIATE,
     ADVANCE

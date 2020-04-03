@@ -21,30 +21,35 @@ const createToken = (id: string) : string => jwt.sign({_id: id },
 
 
 export const signUp = async (req: Request, res: Response) => {
-    const {
-        name,
-        email,
-        password,
-    } = req.body;
-
-    console.log(req.body)
-
-    const user = new User({
-        name,
-        email,
-        password: await encriptPassword(password),
-      }
-    )
-
-    const newUser = await user.save();
-
-    // Create token valid
-    const token = createToken(newUser._id);
-
-    res.json({
-        token,
-        payload: newUser,
-    })
+    try {
+        const {
+            name,
+            email,
+            password,
+        } = req.body;
+        
+        const user = new User({
+            name,
+            email,
+            password: await encriptPassword(password),
+          }
+        )
+    
+        const newUser = await user.save();
+    
+        // Create token valid
+        const token = createToken(newUser._id);
+    
+        res.json({
+            token,
+            payload: newUser,
+        })
+    } catch (error) {
+        res.status(500).send({
+            error: true,
+            message: error.message,
+        })
+    }
 }
 
 export const signIn = async (req: Request, res: Response) => {

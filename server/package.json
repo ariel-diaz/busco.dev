@@ -6,6 +6,7 @@
   "dependencies": {
     "@types/bcryptjs": "^2.4.2",
     "@types/jsonwebtoken": "^8.3.7",
+    "@types/mongoose-unique-validator": "^1.0.3",
     "bcrypt": "^3.0.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
@@ -13,8 +14,10 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.11",
+    "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1",
-    "sequelize": "^5.21.3"
+    "sequelize": "^5.21.3",
+    "tslint": "^6.1.1"
   },
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
@@ -26,15 +29,27 @@
     "@typescript-eslint/parser": "^2.19.0",
     "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
+    "husky": "^4.2.3",
     "nodemon": "^2.0.2",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.7.5"
+    "prettier": "^2.0.2",
+    "tslint-config-airbnb": "^5.11.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "node dist/index.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon src/app.ts\"",
-    "build": "tsc -p ."
+    "build": "tsc -p .",
+    "prettier:base": "prettier --parser typescript --single-quote",
+    "prettier:check": "npm run prettier:base -- --list-different \"src/**/*.{ts,tsx}\"",
+    "prettier:write": "npm run prettier:base -- --write \"src/**/*.{ts,tsx}\"",
+    "tslint": "tslint --project tsconfig.json"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run prettier:write"
+    }
+ },
   "author": "",
   "license": "ISC"
 }
