@@ -1,6 +1,5 @@
-
 import mongoose, { Schema, Document } from 'mongoose';
-import { IProfile, English } from '../interfaces/Profile';
+import { IProfile } from '../interfaces/Profile';
 
 export type ProfileType = IProfile & Document;
 
@@ -8,22 +7,27 @@ export const profilesSchema = new Schema({
   city: { type: String, required: true },
   english: {
     type: String,
-    enum: ['BASIC',
-      'INTERMEDIATE',
-      'ADVANCE'],
+    enum: ['BASIC', 'INTERMEDIATE', 'ADVANCE'],
     required: true,
   },
   skills: {
-    type: [String], required: true,
+    type: [String],
+    required: true,
   },
   portfolio: {
-    type: String, unique: true, required: false,
+    type: String,
+    unique: true,
+    required: false,
   },
   linkedin: {
-    type: String, unique: true, required: false,
+    type: String,
+    unique: true,
+    required: false,
   },
   github: {
-    type: String, unique: true, required: false,
+    type: String,
+    unique: true,
+    required: false,
   },
   experience: {
     type: Boolean,
@@ -31,17 +35,17 @@ export const profilesSchema = new Schema({
   },
 });
 
-profilesSchema.path('portfolio').validate(async (value :string) => {
+profilesSchema.path('portfolio').validate(async (value: string) => {
   const portfolioCount = await profile.countDocuments({ portfolio: value });
   return !portfolioCount;
 },                                        'Portfolio already exists');
 
-profilesSchema.path('github').validate(async (value :string) => {
+profilesSchema.path('github').validate(async (value: string) => {
   const githubCount = await profile.countDocuments({ github: value });
   return !githubCount;
 },                                     'Github already exists');
 
-profilesSchema.path('linkedin').validate(async (value :string) => {
+profilesSchema.path('linkedin').validate(async (value: string) => {
   const linkedinCount = await profile.countDocuments({ linkedin: value });
   return !linkedinCount;
 },                                       'Linkedin already exists');

@@ -1,15 +1,15 @@
 export interface IProfile {
-    city: string,
-    english: English,
-    skills: Array<string>
-    portfolio?: string,
-    github?: string,
-    linkedin?: string,
-    experience: Boolean,
+  city: string;
+  english: English;
+  skills: string[];
+  portfolio?: string;
+  github?: string;
+  linkedin?: string;
+  experience: boolean;
 }
 
 export enum English {
-    BASIC,
-    INTERMEDIATE,
-    ADVANCE
+  BASIC,
+  INTERMEDIATE,
+  ADVANCE,
 }
