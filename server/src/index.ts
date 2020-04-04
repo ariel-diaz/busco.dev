@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 
 import express, { Application, NextFunction, Request, Response } from 'express';
@@ -7,7 +8,7 @@ import morgan from 'morgan';
 import connect from './db';
 
 const app: Application = express();
-const PORT = 3000;
+const PORT = 5000;
 const db: string = process.env.MONGO_CONNECTION_STRING;
 
 import authRouter from './routes/auth';
@@ -15,6 +16,7 @@ import userRouter from './routes/user';
 import profileRouter from './routes/profile';
 
 // Middlewares
+app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

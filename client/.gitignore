@@ -1,0 +1,24 @@
+# dependencies
+/node_modules
+
+# testing
+/coverage
+/cypress/videos/*
+!cypress/videos/.gitkeep
+.nyc_output/
+
+# production
+/build
+/dist
+/.next
+
+# misc
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/

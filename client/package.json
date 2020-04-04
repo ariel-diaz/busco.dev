@@ -1,0 +1,75 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "next dev",
+    "start": "next start",
+    "build": "next build",
+    "lint": "eslint .",
+    "lint:markdown": "markdownlint '**/*.md' --ignore node_modules",
+    "lint:fix": "eslint . --fix --ignore-path .gitignore .",
+    "test": "jest --verbose --coverage",
+    "e2e": "cypress run",
+    "e2e:dev": "cypress open"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index --again",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{md,mdx}": [
+      "npm run lint:markdown --"
+    ],
+    "*.{js,jsx,json,eslintrc,prettierrc}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "keywords": [],
+  "author": "Aerolab",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "isomorphic-fetch": "^2.2.1",
+    "next": "^9.3.1",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-hook-form": "^5.2.0",
+    "styled-components": "^5.0.1",
+    "swr": "^0.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@testing-library/dom": "^7.0.4",
+    "@testing-library/react": "^10.0.1",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^25.1.0",
+    "babel-plugin-jsx-remove-data-test-id": "^2.1.3",
+    "babel-plugin-styled-components": "^1.10.7",
+    "babel-preset-react": "^6.24.1",
+    "cypress": "4.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-cypress": "^2.10.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-json": "^2.1.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-react": "^7.19.0",
+    "husky": "^4.2.3",
+    "jest": "^25.1.0",
+    "lint-staged": "^10.0.8",
+    "markdownlint-cli": "^0.22.0",
+    "prettier": "^1.19.1"
+  }
+}

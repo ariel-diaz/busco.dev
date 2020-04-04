@@ -36,19 +36,22 @@ export const updateUser = async (req: Request, res: Response): Promise<any> => {
       experience,
     };
 
-    const profile = await profileModel.create(newProfile);
-
-    if (!profile) throw new Error('Error al crear el perfil');
-
-    const user = await userModel.findOneAndUpdate(
-      { _id },
-      { profile: profile._id }
-    );
-
+    const user = await userModel.findById(_id);
     if (!user) throw new Error('El usuario no existe');
 
-    res.status(201).send({
-      body: user,
+    const newP = user.profile
+    ? await profileModel.findOneAndUpdate({ _id: user.profile }, { ...newProfile })
+    : await profileModel.create(newProfile);
+
+    if (!newP) throw new Error('Error al crear el perfil');
+
+    const newUser = await userModel.findOneAndUpdate(
+      { _id },
+      { profile: newP._id },
+    ).populate('profile');
+
+    res.status(200).send({
+      payload: newUser,
       message: 'Success',
     });
   } catch (error) {

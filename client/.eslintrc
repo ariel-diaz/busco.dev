@@ -1,0 +1,20 @@
+{
+    "extends": ["airbnb", "prettier", "prettier/react", "plugin:json/recommended", "plugin:cypress/recommended"],
+    "plugins": ["prettier", "cypress"],
+    "globals": {
+      "document": true,
+      "window": true,
+      "process": true
+    },
+    "env": {
+      "es6": true,
+      "browser": true,
+      "jest": true
+    },
+    "rules": {
+      "prettier/prettier": ["error"],
+      "react/jsx-props-no-spreading": "off",
+      "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+    }
+  }
+  

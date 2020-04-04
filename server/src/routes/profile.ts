@@ -1,9 +1,8 @@
 import { Router } from 'express';
-import { getCities } from '../controllers/profile.controller';
+import { getCities, getSkills } from '../controllers/profile.controller';
 const router = Router();
 
-
-router.get('/cities', getCities);
-
+router.get('/cities', getCities)
+    .get('/skills', getSkills);
 
 export default router;
