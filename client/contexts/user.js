@@ -9,21 +9,42 @@ const UserProvider = ({ children }) => {
 
   const updateUser = async newProfile => {
     try {
-      const res = await axios.put(`${api.user}`, { ...newProfile });
-      console.log('NUEVO USER', res);
+      const { data: { payload } } = await axios.put(`${api.user}`, { ...newProfile });
+      initUser(payload);
     } catch (e) {
       console.log('e', e);
     }
   };
+
+
+  const signUp = async(userData) => {
+    try {
+      const { data, status } = await axios.post(`${api.auth}/signUp`, {
+        ...userData
+      });
+
+      if(!data) { throw new Error()}
+      const { token , payload } = data;
+
+      initUser(payload);
+      return status;
+    } catch (error) { 
+      throw new Error('No se puede crear la cuenta.')
+    }
+  }
+
+
+  const initUser = (userData) => {
+    setUser(userData);
+    window.localStorage.setItem('user', JSON.stringify(userData));
+  }
 
   const signIn = async (email, password) => {
     const { data, status } = await axios.post(`${api.auth}/signIn`, {
       email,
       password,
     });
-
-    setUser(data.payload);
-    window.localStorage.setItem('user', JSON.stringify(data.payload));
+    initUser(data.payload);
     return status;
   };
 
@@ -44,7 +65,7 @@ const UserProvider = ({ children }) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, updateUser, signIn, signOut }}>
+    <UserContext.Provider value={{ user, updateUser, signIn, signOut, signUp }}>
       {children}
     </UserContext.Provider>
   );

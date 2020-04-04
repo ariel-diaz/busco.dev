@@ -16,17 +16,14 @@ export const profilesSchema = new Schema({
   },
   portfolio: {
     type: String,
-    unique: true,
     required: false,
   },
   linkedin: {
     type: String,
-    unique: true,
     required: false,
   },
   github: {
     type: String,
-    unique: true,
     required: false,
   },
   experience: {
@@ -36,16 +33,19 @@ export const profilesSchema = new Schema({
 });
 
 profilesSchema.path('portfolio').validate(async (value: string) => {
+  if (!value) return true;
   const portfolioCount = await profile.countDocuments({ portfolio: value });
   return !portfolioCount;
 }, 'Portfolio already exists');
 
 profilesSchema.path('github').validate(async (value: string) => {
+  if (!value) return true;
   const githubCount = await profile.countDocuments({ github: value });
   return !githubCount;
 }, 'Github already exists');
 
 profilesSchema.path('linkedin').validate(async (value: string) => {
+  if (!value) return true;
   const linkedinCount = await profile.countDocuments({ linkedin: value });
   return !linkedinCount;
 }, 'Linkedin already exists');

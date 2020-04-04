@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
 import { useUser } from '../contexts/user';
+import Button from '../components/Button';
+import Input from '../components/Input';
+import Link from 'next/link';
 
 const LoginContainer = styled.div`
   display: grid;
@@ -11,10 +14,6 @@ const LoginContainer = styled.div`
 `;
 
 const Title = styled.span``;
-
-const Input = styled.input``;
-
-const Button = styled.button``;
 
 export default function Login() {
   const { signIn, user } = useUser();
@@ -54,6 +53,7 @@ export default function Login() {
       <Button type="button" onClick={login} disabled={loading}>
         Iniciar sesion
       </Button>
+      <Link href="/register">Crear una cuenta </Link>
     </LoginContainer>
   );
 }

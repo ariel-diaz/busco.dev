@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { IUser } from '../interfaces/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.model';
@@ -41,7 +40,7 @@ export const signUp = async (req: Request, res: Response) => {
       payload: newUser,
     });
   } catch (error) {
-    res.status(500).send({
+    res.status(400).send({
       error: true,
       message: error.message,
     });

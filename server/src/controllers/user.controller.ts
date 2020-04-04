@@ -48,10 +48,12 @@ export const updateUser = async (req: Request, res: Response): Promise<any> => {
     const newUser = await userModel.findOneAndUpdate(
       { _id },
       { profile: newP._id },
-    ).populate('profile');
+    );
+
+    const userWithProfile = await userModel.findById(_id).populate('profile');
 
     res.status(200).send({
-      payload: newUser,
+      payload: userWithProfile,
       message: 'Success',
     });
   } catch (error) {
