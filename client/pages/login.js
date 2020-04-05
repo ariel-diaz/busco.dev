@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 import { useUser } from '../contexts/user';
 import Button from '../components/Button';
 import Input from '../components/Input';
-import Link from 'next/link';
-
-const LoginContainer = styled.div`
-  display: grid;
-  grid-template-columns: 300px;
-  grid-gap: 24px;
-  padding: 24px;
-`;
+import Container from '../components/Container';
 
 const Title = styled.span``;
 
+const Form = styled.form`
+  display: grid;
+  grid-template-columns: 300px;
+  grid-gap: 24px;
+  padding: 32px 0px 72px;
+`;
 export default function Login() {
   const { signIn, user } = useUser();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const login = async () => {
+  const onSubmit = async ({ email, password }) => {
     setLoading(false);
     const status = await signIn(email, password);
 
@@ -38,22 +38,23 @@ export default function Login() {
   }, []);
 
   return (
-    <LoginContainer>
+    <Container>
       <Title>Iniciar sesion</Title>
-      <Input
-        type="text"
-        placeholder="Email"
-        onChange={({ target }) => setEmail(target.value)}
-      />
-      <Input
-        type="password"
-        placeholder="Password"
-        onChange={({ target }) => setPassword(target.value)}
-      />
-      <Button type="button" onClick={login} disabled={loading}>
-        Iniciar sesion
-      </Button>
-      <Link href="/register">Crear una cuenta </Link>
-    </LoginContainer>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <Input name="email" type="text" placeholder="Email" ref={register} />
+        <Input
+          name="password"
+          type="password"
+          placeholder="Password"
+          ref={register}
+        />
+        <Button type="submit" disabled={loading}>
+          Iniciar sesion
+        </Button>
+      </Form>
+      <Link href="/register">
+        <a>Crear una cuenta</a>
+      </Link>
+    </Container>
   );
 }

@@ -1,43 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useRouter } from 'next/router';
 import api from '../utils/api';
 
 const UserContext = React.createContext({});
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   const updateUser = async newProfile => {
     try {
-      const { data: { payload } } = await axios.put(`${api.user}`, { ...newProfile });
+      const {
+        data: { payload },
+      } = await axios.put(`${api.user}`, { ...newProfile });
       initUser(payload);
     } catch (e) {
       console.log('e', e);
     }
   };
 
-
-  const signUp = async(userData) => {
+  const signUp = async userData => {
     try {
       const { data, status } = await axios.post(`${api.auth}/signUp`, {
-        ...userData
+        ...userData,
       });
 
-      if(!data) { throw new Error()}
-      const { token , payload } = data;
+      if (!data) {
+        throw new Error();
+      }
 
+      const { token, payload } = data;
       initUser(payload);
       return status;
-    } catch (error) { 
-      throw new Error('No se puede crear la cuenta.')
+    } catch (error) {
+      throw new Error('No se puede crear la cuenta.');
     }
-  }
+  };
 
-
-  const initUser = (userData) => {
+  const initUser = userData => {
     setUser(userData);
     window.localStorage.setItem('user', JSON.stringify(userData));
-  }
+  };
 
   const signIn = async (email, password) => {
     const { data, status } = await axios.post(`${api.auth}/signIn`, {
@@ -51,6 +55,9 @@ const UserProvider = ({ children }) => {
   const signOut = () => {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('user');
+    setUser(null);
+
+    router.push('/login');
   };
 
   useEffect(() => {
@@ -59,7 +66,6 @@ const UserProvider = ({ children }) => {
         JSON.parse(window.localStorage.getItem('user'))) ||
       null;
     if (userLocalStorage && !user) {
-      console.log('ASDSAD', userLocalStorage);
       setUser(userLocalStorage);
     }
   }, []);

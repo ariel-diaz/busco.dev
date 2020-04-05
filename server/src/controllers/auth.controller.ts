@@ -51,26 +51,26 @@ export const signIn = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email }).populate('profile');
-  
+    const user = await User.findOne({ email });
+
     if (!user) {
       res.status(404).json({
         error: true,
         message: 'EL usuario no existe.',
       });
     }
-  
+
     const isValid = await validatePassword(password, user.password);
-  
+
     if (!isValid) {
       res.status(400).json({
         error: true,
         message: 'La password es invalida.',
       });
     }
-  
+
     const token = createToken(user._id);
-  
+
     res.json({
       token,
       payload: user,

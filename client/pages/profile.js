@@ -3,10 +3,13 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
 import axios from 'axios';
+import Link from 'next/link';
 import api from '../utils/api';
 import { useUser } from '../contexts/user';
-import SelectMultiple from '../components/SelectMultiple'
-import Link from 'next/link';
+import SelectMultiple from '../components/SelectMultiple';
+import Container from '../components/Container';
+import Button from '../components/Button';
+import SelectCities from '../components/SelectCities';
 
 const Form = styled.form`
   display: grid;
@@ -21,10 +24,9 @@ const Label = styled.label`
   grid-gap: 12px;
 `;
 
-
 export default function Profile() {
   const { user, updateUser } = useUser();
-  const { register, handleSubmit, watch, errors } = useForm();
+  const { register, handleSubmit } = useForm();
   const {
     data: cities,
     error: errorCities,
@@ -39,9 +41,8 @@ export default function Profile() {
   } = useSWR(api.skills, url =>
     axios.get(url).then(({ data }) => data.payload)
   );
-  const [focus, setFocus] = useState(false);
   const [skillsSelected, setSkillsSelected] = useState(
-    (user && user.profile && user.profile.skills) || []
+    (user && user.skills) || []
   );
 
   const onSubmit = async data => {
@@ -50,9 +51,6 @@ export default function Profile() {
       ...data,
       skills: [...skillsSelected],
     };
-
-    console.log('ProfileData', profileData);
-
     await updateUser(profileData);
   };
 
@@ -61,35 +59,32 @@ export default function Profile() {
   }
 
   return (
-    <>
+    <Container>
       <h1> Hola {user.name}, completa tu perfil! </h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Label>
           Skills
           <SelectMultiple
             list={skills}
-            focus={focus}
             addedList={skillsSelected}
             setAddedList={setSkillsSelected}
           />
         </Label>
         <Label>
           De donde sos?
-          <select name="city" ref={register} defaultValue={user.profile && user.profile.city}>
-            {cities &&
-              cities.map(({ provincia, iso_31662 }) => (
-                <option key={iso_31662} value={provincia}>
-                  {provincia}
-                </option>
-              ))}
-          </select>
+          <SelectCities
+            name="city"
+            cities={cities}
+            defaultValue={user && user.city}
+            ref={register}
+          />
         </Label>
         <Label>
           Nivel de ingles
           <select
             name="english"
             ref={register}
-            defaultValue={user.profile && user.profile.english}
+            defaultValue={user && user.english}
           >
             <option value="BASIC">Básico</option>
             <option value="INTERMEDIATE">Intermedio</option>
@@ -100,9 +95,9 @@ export default function Profile() {
           Portfolio
           <input
             type="text"
-            name="porfolio"
+            name="portfolio"
             ref={register}
-            defaultValue={user.profile  && user.profile.portfolio}
+            defaultValue={user && user.portfolio}
           />
         </Label>
         <Label>
@@ -111,7 +106,7 @@ export default function Profile() {
             type="text"
             name="linkedin"
             ref={register}
-            defaultValue={user.profile && user.profile.linkedin}
+            defaultValue={user && user.linkedin}
           />
         </Label>
         <Label>
@@ -120,7 +115,7 @@ export default function Profile() {
             type="text"
             name="github"
             ref={register}
-            defaultValue={user.profile && user.profile.github}
+            defaultValue={user && user.github}
           />
         </Label>
         <Label>
@@ -129,16 +124,15 @@ export default function Profile() {
             type="checkbox"
             name="experience"
             ref={register}
-            defaultChecked={user.profile && user.profile.experience}
+            defaultChecked={user && user.experience}
           />
         </Label>
-        <input type="submit" value="Actualizar perfil" />
+        <Button type="submit"> Actualizar perfil </Button>
       </Form>
-
 
       <Link href="/">
         <a> Volver a la home </a>
       </Link>
-    </>
+    </Container>
   );
 }

@@ -28,4 +28,4 @@ export const getSkills = (req: Request, res: Response) => {
       error: error.message,
     });
   }
-}
+};
