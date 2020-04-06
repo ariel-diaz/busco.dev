@@ -55,29 +55,6 @@ export const deleteUser = async (req: Request, res: Response) => {
   }
 };
 
-export const getUsers = async (req: Request, res: Response): Promise<any> => {
-  try {
-    const { page = 1, ...filters } = req.query;
-    const pageSize = 5;
-
-    const query = setFilters(filters);
-
-    const users = await userModel
-      .find(query)
-      .skip((page - 1) * pageSize)
-      .limit(pageSize);
-
-    res.status(200).send({
-      length: users.length,
-      payload: users,
-    });
-  } catch (error) {
-    res.status(500).send({
-      error,
-    });
-  }
-};
-
 const setFilters = (filter: any) => {
   const query: any = {};
 
@@ -110,4 +87,39 @@ const setFilters = (filter: any) => {
   }
 
   return query;
+};
+
+export const getUsers = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { page = 1, ...filters } = req.query;
+    const pageSize = 2;
+
+    const query = setFilters(filters);
+
+    await userModel
+      .find(query)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .exec((err, users) => {
+        if (err) {
+          throw new Error('');
+        }
+        userModel.countDocuments(query).exec((countError: Error, count) => {
+          if (err) {
+            throw new Error(countError.message);
+          }
+
+          res.status(200).send({
+            payload: users,
+            total: count,
+            page: +page,
+            pageSize,
+          });
+        });
+      });
+  } catch (error) {
+    res.status(500).send({
+      error,
+    });
+  }
 };
