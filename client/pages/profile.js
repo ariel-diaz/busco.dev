@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import useSWR from 'swr';
-import axios from 'axios';
+import axios from '../utils/axios';
 import Link from 'next/link';
 import api from '../utils/api';
 import { useUser } from '../contexts/user';

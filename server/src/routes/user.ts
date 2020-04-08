@@ -6,6 +6,9 @@ import {
   getUsers,
   deleteUser,
 } from '../controllers/user.controller';
+import { TokenValidation } from '../libs/verifyToken';
+
+router.use(TokenValidation);
 
 router
   .get('/all', getUsers)

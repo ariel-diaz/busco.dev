@@ -10,15 +10,14 @@ const PaginationNumber = styled.button`
   color: ${props => (props.active ? 'red' : 'none')};
 `;
 
-const Pagination = ({ page: initPage, pageSize, total, onChange }) => {
+const Pagination = ({page = 1, pageSize = 2, total = 2, onChange }) => {
   const totalPages = Math.round(total / pageSize);
-  const pagination = direction => onChange(direction + initPage);
+  const pagination = direction => onChange(direction + page);
   const setPage = p => onChange(p);
-
   return (
     <PaginationContainer>
       <PaginationBtn
-        disabled={initPage === 1}
+        disabled={page === 1}
         type="button"
         onClick={() => pagination(-1)}
       >
@@ -26,7 +25,7 @@ const Pagination = ({ page: initPage, pageSize, total, onChange }) => {
       </PaginationBtn>
       {[...Array(totalPages)].map((_, i) => (
         <PaginationNumber
-          active={i + 1 === initPage}
+          active={i + 1 === page}
           key={i}
           onClick={() => setPage(i + 1)}
         >
@@ -34,7 +33,7 @@ const Pagination = ({ page: initPage, pageSize, total, onChange }) => {
         </PaginationNumber>
       ))}
       <PaginationBtn
-        disabled={initPage === totalPages}
+        disabled={page === totalPages}
         onClick={() => pagination(1)}
       >
         Siguiente

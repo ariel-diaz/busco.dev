@@ -11,7 +11,8 @@ services:
             - .:/home/node/code
             - /home/node/code/node_modules
         environment:
-            SECRET_TOKEN: esprivado
+            TOKEN_SECRET: TOKENSECRET
+            REFRESH_TOKEN_SECRET: REFRESHTOKENSECRET
             MONGO_CONNECTION_STRING: mongodb://db:27017
     db:
         image: mongo:3

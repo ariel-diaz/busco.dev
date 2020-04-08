@@ -7,6 +7,7 @@ import { useUser } from '../contexts/user';
 import Button from '../components/Button';
 import Input from '../components/Input';
 import Container from '../components/Container';
+import LocalStorageService from '../utils/localStorageService';
 
 const Title = styled.span``;
 
@@ -33,8 +34,9 @@ export default function Login() {
   };
 
   React.useEffect(() => {
+    const localStorageService = LocalStorageService.getService();
     window.localStorage.removeItem('user');
-    window.localStorage.removeItem('token');
+    localStorageService.clearToken();
   }, []);
 
   return (

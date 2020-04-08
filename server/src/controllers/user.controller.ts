@@ -100,6 +100,7 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
       .find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
+      .select('-password -refreshToken')
       .exec((err, users) => {
         if (err) {
           throw new Error('');
@@ -110,14 +111,15 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
           }
 
           res.status(200).send({
+            pageSize,
             payload: users,
             total: count,
             page: +page,
-            pageSize,
           });
         });
       });
   } catch (error) {
+    console.log('error', error);
     res.status(500).send({
       error,
     });

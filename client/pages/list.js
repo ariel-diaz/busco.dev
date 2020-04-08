@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import axios from '../utils/axios';
 import styled from 'styled-components';
 import api from '../utils/api';
 import Card from '../components/Card';
 import Container from '../components/Container';
 import Filters from '../components/Filters';
 import Pagination from '../components/Pagination';
+import useSWR from 'swr';
 
 const ListContainer = styled.div`
   display: grid;
@@ -29,21 +30,33 @@ const Wrapper = styled.div`
   grid-template-columns: 1fr 3fr;
 `;
 
+export default function List() {
+  const { data, error, loading } = useSWR(api.list, (url) => axios.get(url).then(resp => resp.data))
 
-export default function List({
-  firstList,
-  page: initPage,
-  total: initTotal,
-  pageSize: initPageSize,
-}) {
-  const [list, setList] = useState(firstList);
+  const [list, setList] = useState(null);
+  const [paginate, setPaginate] = useState(null);
   const [loadingFilters, setLoadingFilters] = useState(false);
-  const [paginate, setPaginate] = useState({
-    page: initPage,
-    pageSize: initPageSize,
-    total: initTotal,
-  });
   const [filters, setFilters] = useState(null);
+
+  useEffect(() => {
+    // TODO: D:
+    if(data) {
+      const {
+        payload: firstList,
+        page: initPage,
+        pageSize: initPageSize,
+        total: initTotal,
+      } = data;
+
+      setList(firstList);
+      setPaginate({
+        page: initPage,
+        pageSize: initPageSize,
+        total: initTotal,
+      });
+    }
+  }, [data])
+  
 
   const getParams = obj =>
     Object.entries(obj)
@@ -80,6 +93,15 @@ export default function List({
     filterList(filters, page);
   };
   
+  if(loading) {
+    return <div> Loading... </div>
+  }
+
+  if(error) {
+    return <div> error </div>
+  }
+
+  
   return (
     <Container>
       <Wrapper>
@@ -88,7 +110,7 @@ export default function List({
           <h1> Desarrolladores </h1>
           <CardsContainer>
             {loadingFilters && <div> Loading... </div>}
-            {!loadingFilters && list.length === 0 && (
+            {!loadingFilters && list && list.length === 0 && (
               <div> No hay resultados para esta busqueda</div>
             )}
             {!loadingFilters &&
@@ -96,20 +118,9 @@ export default function List({
               list.map(user => <Card key={user._id} {...user} />)}
           </CardsContainer>
 
-          <Pagination {...paginate} onChange={handlePaginate} />
+         <Pagination {...paginate} onChange={handlePaginate} />
         </ListContainer>
       </Wrapper>
     </Container>
   );
 }
-
-List.getInitialProps = async () => {
-  const response = await axios.get(api.list);
-  const { page, pageSize, total } = response.data;
-  return {
-    firstList: response.data.payload,
-    page,
-    pageSize,
-    total,
-  };
-};

@@ -45,6 +45,10 @@ export const userSchema = new Schema({
     type: Boolean,
     required: false,
   },
+  refreshToken: {
+    type: String,
+    required: false,
+  },
 });
 
 userSchema.path('email').validate(async (value: string) => {

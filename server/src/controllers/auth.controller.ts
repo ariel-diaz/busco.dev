@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.model';
@@ -10,7 +10,7 @@ const encriptPassword = async (password: string): Promise<string> => {
 
 const validatePassword = async (
   password: string,
-  actualPassword: string
+  actualPassword: string,
 ): Promise<boolean> => {
   return await bcrypt.compare(password, actualPassword);
 };
@@ -19,6 +19,36 @@ const createToken = (id: string): string =>
   jwt.sign({ _id: id }, process.env.TOKEN_SECRET || 'TOKENSECRET', {
     expiresIn: 600,
   });
+
+const createRefreshToken = (id: string): string =>
+  jwt.sign({ _id: id }, process.env.REFRESH_TOKEN_SECRET || 'TOKENSECRET', {
+    expiresIn: 86400,
+  });
+
+export const refreshToken = async (req: Request, res: Response) => {
+  try {
+    const { refresh_token } = req.body;
+
+    const payload = jwt.verify(refresh_token, process.env.REFRESH_TOKEN_SECRET || '');
+    const user = await User.findOne({ refreshToken: refresh_token });
+
+    if (!user || !payload) throw new Error('Refresh token invalido');
+
+    const newToken = createToken(user._id);
+    const newRefreshToken = createRefreshToken(user._id);
+
+    res.status(201).send({
+      access_token: newToken,
+      refresh_token: newRefreshToken,
+    });
+
+  } catch (error) {
+    res.status(400).send({
+      error,
+      success: true,
+    });
+  }
+};
 
 export const signUp = async (req: Request, res: Response) => {
   try {
@@ -34,9 +64,13 @@ export const signUp = async (req: Request, res: Response) => {
 
     // Create token valid
     const token = createToken(newUser._id);
+    const refresh = createRefreshToken(newUser._id);
+
+    await User.findByIdAndUpdate(newUser._id, { refreshToken: refresh });
 
     res.json({
       token,
+      refreshToken: refresh,
       payload: newUser,
     });
   } catch (error) {
@@ -70,9 +104,13 @@ export const signIn = async (req: Request, res: Response) => {
     }
 
     const token = createToken(user._id);
+    const refresh = createRefreshToken(user._id);
+
+    await User.findByIdAndUpdate(user._id,  { refreshToken: refresh });
 
     res.json({
       token,
+      refreshToken: refresh,
       payload: user,
     });
   } catch (error) {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import axios from '../utils/axios';
 import { useRouter } from 'next/router';
 import api from '../utils/api';
+import LocalStorageService from '../utils/localStorageService';
 
 const UserContext = React.createContext({});
-
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const router = useRouter();
@@ -30,45 +30,59 @@ const UserProvider = ({ children }) => {
         throw new Error();
       }
 
-      const { token, payload } = data;
-      initUser(payload);
+      const { token, refreshToken, payload } = data;
+      initUser(payload, {
+        access_token: token,
+        refresh_token: refreshToken
+      });
       return status;
     } catch (error) {
       throw new Error('No se puede crear la cuenta.');
     }
   };
 
-  const initUser = userData => {
+  const initUser = (userData, token) => {
+    const localStorageService = LocalStorageService.getService();
     setUser(userData);
     window.localStorage.setItem('user', JSON.stringify(userData));
+
+    if(token){
+      localStorageService.setToken(token)
+    }
+
   };
 
   const signIn = async (email, password) => {
-    const { data, status } = await axios.post(`${api.auth}/signIn`, {
+    const { data, status, } = await axios.post(`${api.auth}/signIn`, {
       email,
       password,
     });
-    initUser(data.payload);
+
+    initUser(data.payload, {
+      access_token: data.token,
+      refresh_token: data.refreshToken,
+    });
     return status;
   };
 
   const signOut = () => {
-    window.localStorage.removeItem('token');
+    const localStorageService = LocalStorageService.getService();
     window.localStorage.removeItem('user');
-    setUser(null);
+    localStorageService.clearToken();
 
+    setUser(null);
     router.push('/login');
   };
 
-  useEffect(() => {
-    const userLocalStorage =
-      (window.localStorage.getItem('user') &&
-        JSON.parse(window.localStorage.getItem('user'))) ||
-      null;
-    if (userLocalStorage && !user) {
-      setUser(userLocalStorage);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const userLocalStorage =
+  //     (window.localStorage.getItem('user') &&
+  //       JSON.parse(window.localStorage.getItem('user'))) ||
+  //     null;
+  //   if (userLocalStorage && !user) {
+  //     setUser(userLocalStorage);
+  //   }
+  // }, []);
 
   return (
     <UserContext.Provider value={{ user, updateUser, signIn, signOut, signUp }}>
