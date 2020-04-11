@@ -11,9 +11,7 @@ export const userSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
-    unique: true,
-    uniqueCaseInsensitive: true,
+    required: false,
   },
   password: {
     type: String,
@@ -49,9 +47,18 @@ export const userSchema = new Schema({
     type: String,
     required: false,
   },
+  githubId: {
+    type: String,
+    required: false,
+  },
+  access_token_github: {
+    type: String,
+    required: false,
+  },
 });
 
 userSchema.path('email').validate(async (value: string) => {
+  if (!value) return true;
   const emailCount = await user.countDocuments({ email: value });
   return !emailCount;
 }, 'Email already exists');

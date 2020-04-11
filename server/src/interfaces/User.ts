@@ -4,5 +4,5 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  profile?: IProfile;
+  access_token_github?: string;
 }

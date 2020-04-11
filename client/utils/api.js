@@ -8,4 +8,5 @@ export default {
   auth: `${ENDPOINT}/api/auth`,
   cities: `${ENDPOINT}/api/profile/cities`,
   skills: `${ENDPOINT}/api/profile/skills`,
+  authGithub: `${ENDPOINT}/auth/github`
 };

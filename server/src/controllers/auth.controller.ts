@@ -83,9 +83,11 @@ export const signUp = async (req: Request, res: Response) => {
 
 export const signIn = async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, access_token } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = (access_token && !email)
+    ? await User.findOne({ access_token_github: access_token }).select('-access_token_github -password')
+    : await User.findOne({ email }).select('-access_token_github -password');
 
     if (!user) {
       res.status(404).json({
@@ -94,7 +96,10 @@ export const signIn = async (req: Request, res: Response) => {
       });
     }
 
-    const isValid = await validatePassword(password, user.password);
+    let isValid = true;
+    if (!access_token && password && email) {
+      isValid = await validatePassword(password, user.password);
+    }
 
     if (!isValid) {
       res.status(400).json({
@@ -114,6 +119,7 @@ export const signIn = async (req: Request, res: Response) => {
       payload: user,
     });
   } catch (error) {
+    console.log('error', error);
     res.status(400).json({
       error: true,
       message: 'La password es invalida.',

@@ -15,7 +15,7 @@ export const updateUser = async (req: Request, res: Response): Promise<any> => {
   try {
     const { _id } = req.body;
 
-    const user = await userModel.findByIdAndUpdate(_id, req.body);
+    const user = await userModel.findByIdAndUpdate(_id, req.body, { new: true });
     if (!user) throw new Error('El usuario no existe');
 
     res.status(200).send({
@@ -100,7 +100,7 @@ export const getUsers = async (req: Request, res: Response): Promise<any> => {
       .find(query)
       .skip((page - 1) * pageSize)
       .limit(pageSize)
-      .select('-password -refreshToken')
+      .select('-password -refreshToken -access_token_github')
       .exec((err, users) => {
         if (err) {
           throw new Error('');

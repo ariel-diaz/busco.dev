@@ -7,6 +7,7 @@ import LocalStorageService from '../utils/localStorageService';
 const UserContext = React.createContext({});
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const updateUser = async newProfile => {
@@ -14,6 +15,7 @@ const UserProvider = ({ children }) => {
       const {
         data: { payload },
       } = await axios.put(`${api.user}`, { ...newProfile });
+
       initUser(payload);
     } catch (e) {
       console.log('e', e);
@@ -53,7 +55,7 @@ const UserProvider = ({ children }) => {
   };
 
   const signIn = async (email, password) => {
-    const { data, status, } = await axios.post(`${api.auth}/signIn`, {
+    const { data, status } = await axios.post(`${api.auth}/signIn`, {
       email,
       password,
     });
@@ -74,18 +76,19 @@ const UserProvider = ({ children }) => {
     router.push('/login');
   };
 
-  // useEffect(() => {
-  //   const userLocalStorage =
-  //     (window.localStorage.getItem('user') &&
-  //       JSON.parse(window.localStorage.getItem('user'))) ||
-  //     null;
-  //   if (userLocalStorage && !user) {
-  //     setUser(userLocalStorage);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const userLocalStorage =
+      (window.localStorage.getItem('user') &&
+        JSON.parse(window.localStorage.getItem('user'))) ||
+      null;
+    if (userLocalStorage && !user) {
+      setUser(userLocalStorage);
+    }
+    setLoading(false);
+  }, []);
 
   return (
-    <UserContext.Provider value={{ user, updateUser, signIn, signOut, signUp }}>
+    <UserContext.Provider value={{ user, updateUser, signIn, signOut, signUp, initUser, loading }}>
       {children}
     </UserContext.Provider>
   );

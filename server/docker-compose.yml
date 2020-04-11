@@ -14,5 +14,7 @@ services:
             TOKEN_SECRET: TOKENSECRET
             REFRESH_TOKEN_SECRET: REFRESHTOKENSECRET
             MONGO_CONNECTION_STRING: mongodb://db:27017
+            GITHUB_CLIENT_ID: 32f939675961a229330d
+            GITHUB_SECRET_ID: 92a47f5155579dface3970843bd352219003245d
     db:
         image: mongo:3

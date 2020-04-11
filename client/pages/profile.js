@@ -24,47 +24,71 @@ const Label = styled.label`
   grid-gap: 12px;
 `;
 
+const WrapperSuccess = styled.div`
+  display: flex;
+  justify-center: center;
+`
+
 export default function Profile() {
-  const { user, updateUser } = useUser();
   const { register, handleSubmit } = useForm();
+  const [success, setSuccess] = useState(false);
   const {
     data: cities,
     error: errorCities,
     loading: loadingCities,
   } = useSWR(api.cities, url =>
     axios.get(url).then(({ data }) => data.payload)
-  );
-  const {
-    data: skills,
-    error: errorSkills,
-    loading: loadingSkills,
-  } = useSWR(api.skills, url =>
-    axios.get(url).then(({ data }) => data.payload)
-  );
-  const [skillsSelected, setSkillsSelected] = useState(
-    (user && user.skills) || []
-  );
+    );
+    const {
+      data: skills,
+      error: errorSkills,
+      loading: loadingSkills,
+    } = useSWR(api.skills, url =>
+      axios.get(url).then(({ data }) => data.payload)
+      );
+      const { user, updateUser, loading } = useUser();
+      const [skillsSelected, setSkillsSelected] = useState([]);
+      
+      React.useEffect(() => {
+          if(user && !loading) setSkillsSelected(user.skills)
+      }, [user])
 
   const onSubmit = async data => {
-    const profileData = {
-      _id: user._id,
-      ...data,
-      skills: [...skillsSelected],
-    };
-    await updateUser(profileData);
+    try {
+      const profileData = {
+        _id: user._id,
+        ...data,
+        skills: [...skillsSelected],
+      };
+      const res = await updateUser(profileData);
+      setSuccess(true);
+    } catch(e) {
+      
+    }
   };
 
-  if (!user || loadingCities || loadingSkills) {
+  if (loading || loadingCities || loadingSkills || !user) {
     return <div> Loading ...</div>;
   }
 
-  return (
+  // if(success) {
+  //   return <WrapperSuccess>
+  //     <h3> Actualizaste tu perfil!!!</h3>
+  //     <Link href="/profile"><a>Editar de nuevo </a></Link>
+  //     <br />
+  //     <Link href="/"><a>Ir a la home</a></Link>
+  //   </WrapperSuccess>
+  // }
+
+  if(user) {
+    return (
     <Container>
       <h1> Hola {user.name}, completa tu perfil! </h1>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Label>
           Skills
           <SelectMultiple
+            defaultValue={user.skills}
             list={skills}
             addedList={skillsSelected}
             setAddedList={setSkillsSelected}
@@ -135,4 +159,5 @@ export default function Profile() {
       </Link>
     </Container>
   );
+  }
 }

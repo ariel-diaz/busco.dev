@@ -8,6 +8,8 @@ import Button from '../components/Button';
 import Input from '../components/Input';
 import Container from '../components/Container';
 import LocalStorageService from '../utils/localStorageService';
+import api from '../utils/api';
+import axios from 'axios'
 
 const Title = styled.span``;
 
@@ -56,6 +58,11 @@ export default function Login() {
       </Form>
       <Link href="/register">
         <a>Crear una cuenta</a>
+      </Link>
+      <br />
+      
+      <Link href={api.authGithub}>
+        <a>Iniciar sesion o crear cuenta con Github</a>
       </Link>
     </Container>
   );

@@ -41,7 +41,7 @@ const ResultItem = styled.button`
   }
 `;
 
-const SelectMultiple = ({ focus, list, setAddedList, addedList }) => {
+const SelectMultiple = ({ list, setAddedList, addedList }) => {
   const [results, setResults] = useState([]);
   const [term, setTerm] = useState('');
   const ref = useRef(null);
