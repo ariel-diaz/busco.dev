@@ -26,7 +26,9 @@ const Label = styled.label`
 
 const WrapperSuccess = styled.div`
   display: flex;
-  justify-center: center;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 `
 
 export default function Profile() {
@@ -71,16 +73,17 @@ export default function Profile() {
     return <div> Loading ...</div>;
   }
 
-  // if(success) {
-  //   return <WrapperSuccess>
-  //     <h3> Actualizaste tu perfil!!!</h3>
-  //     <Link href="/profile"><a>Editar de nuevo </a></Link>
-  //     <br />
-  //     <Link href="/"><a>Ir a la home</a></Link>
-  //   </WrapperSuccess>
-  // }
+  if(success) {
+    return <WrapperSuccess>
+      <h3> Actualizaste tu perfil!!!</h3>
+  
+      <Button onClick={() => setSuccess(false)}>
+          Volver a editar
+      </Button>
+      <Link href="/"><a>Ir a la home</a></Link>
+    </WrapperSuccess>
+  }
 
-  if(user) {
     return (
     <Container>
       <h1> Hola {user.name}, completa tu perfil! </h1>
@@ -159,5 +162,4 @@ export default function Profile() {
       </Link>
     </Container>
   );
-  }
 }

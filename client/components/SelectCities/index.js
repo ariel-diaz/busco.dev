@@ -4,7 +4,7 @@ import Select from '../Select';
 const SelectCities = React.forwardRef(
   ({ cities, defaultValue, name, isFilter = false }, ref) => {
     return (
-      <Select name={name} ref={ref} value={defaultValue}>
+      <Select name={name} ref={ref} defaultValue={defaultValue}>
         {isFilter && (
           <option key="Todas" value="">
             Todas

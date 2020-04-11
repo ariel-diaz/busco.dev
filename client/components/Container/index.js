@@ -8,4 +8,5 @@ const Container = styled.div`
 
   margin-top: 72px;
 `;
+
 export default Container;

@@ -63,7 +63,7 @@ const SelectMultiple = ({ list, setAddedList, addedList }) => {
   const addItem = text => {
     const newAddedList = [...addedList, text];
 
-    setResults([]);
+    setResults('');
     setTerm('');
 
     setAddedList(newAddedList);
@@ -81,6 +81,7 @@ const SelectMultiple = ({ list, setAddedList, addedList }) => {
         name="search"
         onChange={handleChange}
         autoComplete="off"
+        value={term}
       />
       {term && term.length > 0 && (
         <ResultSearch>

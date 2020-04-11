@@ -43,7 +43,10 @@ axios.interceptors.response.use(
                     axios.defaults.headers.common['Authorization'] = localStorageService.getAccessToken();
                     return axios(originalRequest);
                 }
-            });
+            }).catch(err => {
+                Router.push('/login');
+                return Promise.reject(err);
+            })
         }
 
         return Promise.reject(error);

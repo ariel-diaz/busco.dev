@@ -119,10 +119,16 @@ export const signIn = async (req: Request, res: Response) => {
       payload: user,
     });
   } catch (error) {
-    console.log('error', error);
     res.status(400).json({
       error: true,
       message: 'La password es invalida.',
     });
   }
+};
+
+export const signInGithub = (req: any, res: Response) => {
+  if (!req.user.access_token_github) {
+    res.redirect('http://localhost:3000/login');
+  }
+  res.redirect(`http://localhost:3000/github?access_token=${req.user.access_token_github}`);
 };

@@ -19,20 +19,29 @@ const Form = styled.form`
   grid-gap: 24px;
   padding: 32px 0px 72px;
 `;
+
+const TextError = styled.span`
+color:red
+`
 export default function Login() {
   const { signIn, user } = useUser();
   const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const router = useRouter();
 
   const onSubmit = async ({ email, password }) => {
-    setLoading(false);
-    const status = await signIn(email, password);
-
-    if (status > 200) {
-      alert('Error AL LOGUEAR');
+    try {
+      setLoading(false);
+      const status = await signIn(email, password);
+  
+      if (status > 200) {
+        alert('Error AL LOGUEAR');
+      }
+      router.push('/');
+    } catch (error) {
+        setError(true)
     }
-    router.push('/');
   };
 
   React.useEffect(() => {
@@ -55,6 +64,7 @@ export default function Login() {
         <Button type="submit" disabled={loading}>
           Iniciar sesion
         </Button>
+        {error && <TextError> Email o contraseña no existe </TextError>}
       </Form>
       <Link href="/register">
         <a>Crear una cuenta</a>
