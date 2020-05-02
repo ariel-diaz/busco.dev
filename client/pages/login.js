@@ -9,7 +9,6 @@ import Input from '../components/Input';
 import Container from '../components/Container';
 import LocalStorageService from '../utils/localStorageService';
 import api from '../utils/api';
-import axios from 'axios'
 
 const Title = styled.span``;
 
@@ -24,7 +23,7 @@ const TextError = styled.span`
 color:red
 `
 export default function Login() {
-  const { signIn, user } = useUser();
+  const { signIn } = useUser();
   const { handleSubmit, register } = useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
